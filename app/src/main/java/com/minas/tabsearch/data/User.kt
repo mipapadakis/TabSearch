@@ -9,5 +9,14 @@ data class User(
     val userName: String,
     val name: String = "",
     val lastName: String = "",
-    val profilePic: String = ""
+    val isFollowing: Boolean = false,
+    val isFollower: Boolean = false,
+    val friendStatus: FriendStatus = FriendStatus.NotFriend
 )
+
+enum class FriendStatus {
+    Friend,
+    Added,
+    Pending,
+    NotFriend
+}

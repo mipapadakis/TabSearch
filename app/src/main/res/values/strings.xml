@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Tab Search</string>
+
+    <string name="status_button_accept">Accept</string>
+    <string name="status_button_decline">Decline</string>
+    <string name="status_button_pending">Pending</string>
+    <string name="status_button_friends">Friends</string>
+    <string name="status_button_not_friends">Add Friend</string>
 </resources>
