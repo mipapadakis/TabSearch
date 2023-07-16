@@ -5,13 +5,13 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class User(
-    @PrimaryKey val id: Int? = null,
-    val userName: String,
-    val name: String = "",
-    val lastName: String = "",
-    val isFollowing: Boolean = false,
-    val isFollower: Boolean = false,
-    val friendStatus: FriendStatus = FriendStatus.NotFriend
+    @PrimaryKey var id: Int? = null,
+    var userName: String = "",
+    var name: String = "",
+    var lastName: String = "",
+    var isFollowing: Boolean = false,
+    var isFollower: Boolean = false,
+    var friendStatus: FriendStatus = FriendStatus.NotFriend
 )
 
 enum class FriendStatus {

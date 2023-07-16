@@ -14,7 +14,7 @@ import kotlin.random.Random
 
 class GenerateRandomUsers {
     companion object {
-        private const val DEFAULT_USER_COUNT = 100
+        private const val DEFAULT_USER_COUNT = 200
         private val genericFirstNames = listOf(
             "John", "Mary", "Robert", "Linda", "William", "Patricia", "David", "Jennifer",
             "James", "Elizabeth", "Michael", "Susan", "Charles", "Jessica", "Joseph", "Sarah",

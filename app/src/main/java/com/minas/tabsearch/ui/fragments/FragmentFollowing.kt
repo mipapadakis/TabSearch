@@ -1,4 +1,6 @@
 package com.minas.tabsearch.ui.fragments
 
-class FragmentFollowing {
+import androidx.fragment.app.Fragment
+
+class FragmentFollowing : Fragment() {
 }
