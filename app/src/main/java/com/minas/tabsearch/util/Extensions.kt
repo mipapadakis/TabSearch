@@ -18,3 +18,16 @@ fun Activity.hideKeyboard() {
         inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
     }
 }
+
+private const val PREFS_NAME = "MyAppPrefs"
+private const val KEY_FIRST_RUN = "firstRun"
+
+fun Context.isFirstRun(): Boolean {
+    val prefs = this.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    val isFirstRun = prefs.getBoolean(KEY_FIRST_RUN, true)
+    if (isFirstRun) {
+        // Set firstRun flag to false, so next time it won't be considered the first run
+        prefs.edit().putBoolean(KEY_FIRST_RUN, false).apply()
+    }
+    return isFirstRun
+}

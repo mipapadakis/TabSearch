@@ -19,19 +19,22 @@ interface IUserDao {
     @Delete
     fun deleteUser(user: User)
 
+    @Query("DELETE FROM user")
+    fun deleteAllUsers()
+
     @Query("SELECT * FROM user WHERE id = :id")
-    fun getUser(id: Int): User?
+    fun getUser(id: Int): Flow<User?>
 
     @Query("SELECT * FROM user")
     fun getAllUsers(): Flow<List<User>>
 
-    @Query("SELECT * FROM user WHERE id LIKE :term OR name LIKE :term OR lastname LIKE :term OR username LIKE :term")
+    @Query("SELECT * FROM user WHERE id LIKE :term OR name LIKE :term OR lastname LIKE :term OR username LIKE :term OR name || lastname LIKE :term")
     fun searchUsers(term: String): Flow<List<User>>
 
-    @Query("SELECT * FROM user WHERE isFollowing = 1 AND (id LIKE :term OR name LIKE :term OR lastname LIKE :term OR username LIKE :term)")
+    @Query("SELECT * FROM user WHERE isFollowing = 1 AND (id LIKE :term OR name LIKE :term OR lastname LIKE :term OR username LIKE :term OR name || lastname LIKE :term)")
     fun searchFollowing(term: String): Flow<List<User>>
 
-    @Query("SELECT * FROM user WHERE isFollower = 1 AND (id LIKE :term OR name LIKE :term OR lastname LIKE :term OR username LIKE :term)")
+    @Query("SELECT * FROM user WHERE isFollower = 1 AND (id LIKE :term OR name LIKE :term OR lastname LIKE :term OR username LIKE :term OR name || lastname LIKE :term)")
     fun searchFollowers(term: String): Flow<List<User>>
 
     @Query("SELECT * FROM user WHERE isFollowing = 1")

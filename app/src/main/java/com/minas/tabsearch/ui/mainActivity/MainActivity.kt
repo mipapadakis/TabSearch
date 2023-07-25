@@ -1,11 +1,10 @@
-package com.minas.tabsearch
+package com.minas.tabsearch.ui.mainActivity
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.minas.tabsearch.databinding.ActivityMainBinding
-import com.minas.tabsearch.ui.activities.TabsActivity
+import com.minas.tabsearch.ui.tabsActivity.TabsActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -16,9 +15,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.button.setOnClickListener {
-            startActivity(Intent(this@MainActivity, TabsActivity::class.java))
-            finish()
+        binding.followingBtn.setOnClickListener {
+            startActivity(TabsActivity.newInstance(this, 0))
+        }
+        binding.followersBtn.setOnClickListener {
+            startActivity(TabsActivity.newInstance(this, 1))
         }
     }
 }

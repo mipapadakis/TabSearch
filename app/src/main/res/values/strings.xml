@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Tab Search</string>
-     <string name="following">Following</string>
+    <string name="following">Following</string>
     <string name="followers">Followers</string>
 
     <string name="status_button_accept">Accept</string>
@@ -9,11 +9,13 @@
     <string name="status_button_friends">Friends</string>
     <string name="status_button_not_friends">Add Friend</string>
 
-    <!--Ui error messages-->
+    <!--Error messages-->
     <string name="error_none"> </string>
     <string name="error_generic">An error has occurred</string>
     <string name="error_loading_following">Error loading following users</string>
-    <string name="error_loading_followers">Error loading following users</string>
+    <string name="error_loading_followers">Error loading followers</string>
     <string name="error_searching_following">Error searching following users</string>
-    <string name="error_searching_followers">Error searching following users</string>
+    <string name="error_searching_followers">Error searching followers</string>
+    <string name="error_generating_users">Error generating users</string>
+    <string name="error_deleting_users">Error deleting users</string>
 </resources>

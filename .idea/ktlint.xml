@@ -7,6 +7,9 @@
         <option value="trailing-comma-on-call-site" />
         <option value="comment-spacing" />
         <option value="trailing-comma-on-declaration-site" />
+        <option value="multiline-if-else" />
+        <option value="no-trailing-spaces" />
+        <option value="keyword-spacing" />
       </list>
     </disabledRules>
   </component>

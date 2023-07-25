@@ -10,7 +10,9 @@ interface IUserRepository {
 
     suspend fun deleteUser(user: User)
 
-    suspend fun getUser(id: Int): User?
+    suspend fun deleteAllUsers()
+
+    fun getUser(id: Int): Flow<User?>
 
     fun getAllUsers(): Flow<List<User>>
 

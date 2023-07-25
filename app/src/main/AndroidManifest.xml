@@ -14,10 +14,13 @@
         android:theme="@style/Theme.TabSearch"
         tools:targetApi="31">
         <activity
-            android:name=".ui.activities.TabsActivity"
+            android:name=".ui.profileActivity.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.tabsActivity.TabsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.mainActivity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
