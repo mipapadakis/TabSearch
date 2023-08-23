@@ -3,6 +3,7 @@ package com.minas.tabsearch.ui.tabsActivity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
@@ -12,8 +13,10 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.minas.tabsearch.R
+import com.minas.tabsearch.data.FriendStatus
 import com.minas.tabsearch.databinding.ActivityTabsBinding
 import com.minas.tabsearch.di.tabsModule
+import com.minas.tabsearch.ui.profileActivity.ProfileActivity
 import com.minas.tabsearch.ui.tabsActivity.followers.FragmentFollowers
 import com.minas.tabsearch.ui.tabsActivity.following.FragmentFollowing
 import com.minas.tabsearch.util.hide
@@ -43,7 +46,38 @@ class TabsActivity : AppCompatActivity() {
         toast = Toast(this)
         setupViewPager(intent.getIntExtra(WHICH_TAB, 0))
         setupUI()
+        setupViewModel()
         if(isFirstRun()) viewModel.generateUsers()
+    }
+
+    private fun setupViewModel() {
+        viewModel.tabsState.subscribeToState(this) {
+            when (it.eventName) {
+                TabsEvent.OnUserClick -> {
+                    startActivity(
+                        ProfileActivity.newInstance(
+                            this,
+                            name = it.user?.name,
+                            lastName = it.user?.lastName,
+                            username = it.user?.userName,
+                            status = it.user?.friendStatus ?: FriendStatus.NotFriend,
+                        )
+                    )
+                }
+                TabsEvent.Search -> {
+                    if(it.activeTab == Tabs.Following) viewModel.searchFollowing(it.searchTerm)
+                    else viewModel.searchFollowers(it.searchTerm)
+                }
+                TabsEvent.CancelSearchMode -> {
+                    if(it.activeTab == Tabs.Following) viewModel.searchFollowing("")
+                    else viewModel.searchFollowers(it.searchTerm)
+                }
+                TabsEvent.Error -> {
+                    Log.d("TabSearch test", "Error = ${it.errorType}: ${it.errorMessage}")
+                }
+                else -> {}
+            }
+        }
     }
 
     private fun setupUI() {

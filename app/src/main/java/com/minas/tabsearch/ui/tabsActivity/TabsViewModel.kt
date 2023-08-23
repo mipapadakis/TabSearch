@@ -22,8 +22,7 @@ class TabsViewModel(
 
     fun generateUsers() {
         viewModelScope.launch(Dispatchers.IO) {
-            GenerateRandomUsers.asFlow(200).collect { user ->
-                //val profilePic = GenerateRandomUsers.getRandomProfilePic(user)
+            GenerateRandomUsers.asFlow(100).collect { user ->
                 Log.d(
                     "TabSearch test",
                     "ID: ${user.id}, " +
@@ -43,17 +42,14 @@ class TabsViewModel(
     }
 
     override fun getFollowing() {
-        Log.d("TabSearch test: ViewModel", "getFollowing")
         searchFollowing(tabsState.getStateCurrentValue().searchTerm)
     }
 
     override fun getFollowers() {
-        Log.d("TabSearch test: ViewModel", "getFollowers")
         searchFollowers(tabsState.getStateCurrentValue().searchTerm)
     }
 
     override fun searchFollowing(term: String) {
-        Log.d("TabSearch test: ViewModel", "searchFollowing($term)")
         viewModelScope.launch {
             repository.searchFollowing(term).catch {
                 showError(TabsError.ErrorSearchingFollowing, it.message ?: "")
@@ -61,6 +57,7 @@ class TabsViewModel(
                 tabsState.updateState {
                     it.copy(
                         eventName = TabsEvent.LoadFollowing,
+                        searchTerm = term,
                         followingList = list
                     )
                 }
@@ -69,7 +66,6 @@ class TabsViewModel(
     }
 
     override fun searchFollowers(term: String) {
-        Log.d("TabSearch test: ViewModel", "searchFollowers($term)")
         viewModelScope.launch(Dispatchers.IO) {
             repository.searchFollowers(term).catch {
                 showError(TabsError.ErrorSearchingFollowers, it.message ?: "")
@@ -104,7 +100,6 @@ class TabsViewModel(
     }
 
     override fun search(term: String) {
-        Log.d("TabSearch test: ViewModel", "search($term)")
         tabsState.updateState {
             it.copy(
                 eventName = TabsEvent.Search,

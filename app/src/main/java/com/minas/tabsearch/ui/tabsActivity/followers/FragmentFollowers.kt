@@ -7,17 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.minas.tabsearch.data.FriendStatus
 import com.minas.tabsearch.data.User
 import com.minas.tabsearch.databinding.TabListBinding
 import com.minas.tabsearch.di.tabsModule
-import com.minas.tabsearch.ui.profileActivity.ProfileActivity
 import com.minas.tabsearch.ui.tabsActivity.IStatusActions
 import com.minas.tabsearch.ui.tabsActivity.Tabs
 import com.minas.tabsearch.ui.tabsActivity.TabsActivity
 import com.minas.tabsearch.ui.tabsActivity.TabsEvent
 import com.minas.tabsearch.ui.tabsActivity.TabsViewModel
 import com.minas.tabsearch.ui.tabsActivity.UserAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.core.context.loadKoinModules
 
@@ -25,6 +28,7 @@ class FragmentFollowers : Fragment(), IStatusActions {
     private lateinit var binding: TabListBinding
     private val viewModel by activityViewModel<TabsViewModel>()
     private lateinit var adapter: UserAdapter
+    private var stopRefreshJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,41 +63,15 @@ class FragmentFollowers : Fragment(), IStatusActions {
 
     private fun setupViewModel() {
         viewModel.tabsState.subscribeToState(viewLifecycleOwner) {
+            Log.d("TabSearch test", "Tab 2 ${it.eventName}")
             when (it.eventName) {
-                TabsEvent.OnTabChange -> {}
-                TabsEvent.OnUserClick -> {
-                    startActivity(
-                        ProfileActivity.newInstance(
-                            context,
-                            name = it.user?.name,
-                            lastName = it.user?.lastName,
-                            username = it.user?.userName,
-                            status = it.user?.friendStatus ?: FriendStatus.NotFriend,
-                        )
-                    )
-                }
-                TabsEvent.Search -> {
-                    viewModel.searchFollowers(it.searchTerm)
-                }
-                TabsEvent.CancelSearchMode -> {
-                    viewModel.searchFollowers("")
-                }
                 TabsEvent.LoadFollowers, TabsEvent.SearchFollowers -> {
-                    adapter.submitList(it.followersList)
-                }
-                TabsEvent.Error -> {
-                    Log.d("TabSearch test", "Error = ${it.errorType}: ${it.errorMessage}")
+                    viewModel.setEventNone()
+                    adapter.submitUserList(it.followersList)
                 }
                 else -> {}
             }
-            if (it.eventName != TabsEvent.None) {
-                Log.d(
-                    "TabSearch test: FragmentFollowers UI state",
-                    "FragmentFollowers UiEvent = ${it.eventName}"
-                )
-                binding.refresher.isRefreshing = false
-                viewModel.setEventNone()
-            }
+            if (it.eventName != TabsEvent.None) stopRefresh(800)
         }
     }
 
@@ -131,6 +109,14 @@ class FragmentFollowers : Fragment(), IStatusActions {
         viewModel.setEventNone()
         binding.refresher.isRefreshing = true
         viewModel.refresh()
+    }
+
+    private fun stopRefresh(delay: Int) {
+        stopRefreshJob?.cancel()
+        stopRefreshJob = CoroutineScope(Dispatchers.Main).launch {
+            delay(delay.toLong())
+            binding.refresher.isRefreshing = false
+        }
     }
 
     private fun showToast(str: String) = (activity as TabsActivity).showToast(str)

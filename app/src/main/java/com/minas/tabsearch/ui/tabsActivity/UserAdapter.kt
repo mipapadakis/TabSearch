@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.minas.tabsearch.R
 import com.minas.tabsearch.data.FriendStatus
@@ -17,8 +19,18 @@ import com.minas.tabsearch.util.show
 class UserAdapter(
     private val statusActions: IStatusActions,
     private val onItemClick: (user: User) -> Unit
-) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+) : ListAdapter<User, UserAdapter.UserViewHolder>(UserDiffCallback()) {
     private val users: MutableList<User> = mutableListOf()
+
+    class UserDiffCallback : DiffUtil.ItemCallback<User>() {
+        override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: User, newItem: User): Boolean {
+            return oldItem == newItem
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.user_item, parent, false)
@@ -27,7 +39,7 @@ class UserAdapter(
 
     override fun getItemCount() = users.size
 
-    fun submitList(list: List<User>) {
+    fun submitUserList(list: List<User>) {
         users.clear()
         users.addAll(list)
         notifyDataSetChanged()

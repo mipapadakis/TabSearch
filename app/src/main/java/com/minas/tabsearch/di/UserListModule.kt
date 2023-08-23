@@ -7,6 +7,6 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val tabsModule = module {
+    factory<IUserRepository> { UserRepositoryImpl(get()) }
     viewModel { TabsViewModel(get()) }
-    single<IUserRepository> { UserRepositoryImpl(get()) }
 }
