@@ -54,6 +54,7 @@ class TabsActivity : AppCompatActivity() {
         viewModel.tabsState.subscribeToState(this) {
             when (it.eventName) {
                 TabsEvent.OnUserClick -> {
+                    viewModel.setEventNone()
                     startActivity(
                         ProfileActivity.newInstance(
                             this,
@@ -65,14 +66,17 @@ class TabsActivity : AppCompatActivity() {
                     )
                 }
                 TabsEvent.Search -> {
+                    viewModel.setEventNone()
                     if(it.activeTab == Tabs.Following) viewModel.searchFollowing(it.searchTerm)
                     else viewModel.searchFollowers(it.searchTerm)
                 }
                 TabsEvent.CancelSearchMode -> {
+                    viewModel.setEventNone()
                     if(it.activeTab == Tabs.Following) viewModel.searchFollowing("")
                     else viewModel.searchFollowers(it.searchTerm)
                 }
                 TabsEvent.Error -> {
+                    viewModel.setEventNone()
                     Log.d("TabSearch test", "Error = ${it.errorType}: ${it.errorMessage}")
                 }
                 else -> {}

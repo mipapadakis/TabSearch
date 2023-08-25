@@ -9,6 +9,7 @@ import com.minas.tabsearch.data.repo.IUserRepository
 import com.minas.tabsearch.util.GenerateRandomUsers
 import com.minas.tabsearch.util.ViewState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
@@ -17,8 +18,7 @@ class TabsViewModel(
 ) : ViewModel(), ITabsEventHandler, IStatusActions {
     val tabsState = ViewState(TabsState())
 
-    fun inFollowingTab() = tabsState.getStateCurrentValue().activeTab == Tabs.Following
-    fun inFollowersTab() = tabsState.getStateCurrentValue().activeTab == Tabs.Followers
+    private fun inFollowingTab() = tabsState.getStateCurrentValue().activeTab == Tabs.Following
 
     fun generateUsers() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -57,7 +57,6 @@ class TabsViewModel(
                 tabsState.updateState {
                     it.copy(
                         eventName = TabsEvent.LoadFollowing,
-                        searchTerm = term,
                         followingList = list
                     )
                 }
@@ -73,7 +72,6 @@ class TabsViewModel(
                 tabsState.updateState {
                     it.copy(
                         eventName = TabsEvent.LoadFollowers,
-                        searchTerm = term,
                         followersList = list
                     )
                 }
@@ -129,7 +127,9 @@ class TabsViewModel(
 
     private fun onChangeFriendStatus(user: User, status: FriendStatus) {
         viewModelScope.launch(Dispatchers.IO) {
-            //repository.updateUser(user.copy(friendStatus = status)) //WHY???????????????????? TODO
+            repository.updateUser(user.copy(friendStatus = status))
+            delay(150)
+            refresh()
         }
     }
 
