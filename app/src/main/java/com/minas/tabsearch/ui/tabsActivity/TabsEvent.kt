@@ -1,15 +1,15 @@
 package com.minas.tabsearch.ui.tabsActivity
 
 import com.minas.tabsearch.R
-import com.minas.tabsearch.data.User
+import com.minas.tabsearch.ui.domain.DomainUser
 
 data class TabsState(
     val eventName: TabsEvent = TabsEvent.None,
     val activeTab: Tabs = Tabs.Following,
     val searchTerm: String = "",
-    val user: User? = null,
-    val followingList: List<User> = emptyList(),
-    val followersList: List<User> = emptyList(),
+    val userClicked: DomainUser? = null,
+    val followingList: List<DomainUser> = emptyList(),
+    val followersList: List<DomainUser> = emptyList(),
     val errorType: TabsError = TabsError.ErrorNone,
     val errorMessage: String = ""
 )
@@ -18,12 +18,11 @@ enum class TabsEvent {
     None,
     LoadFollowing,
     LoadFollowers,
-    SearchFollowing,
-    SearchFollowers,
     Search,
     CancelSearchMode,
-    OnUserClick,
-    OnTabChange,
+    UserClick,
+    UpdateUser,
+    TabChange,
     Error
 }
 
@@ -49,7 +48,7 @@ interface ITabsEventHandler {
     fun searchFollowers(term: String)
     fun search(term: String)
     fun cancelSearchMode()
-    fun onUserClick(user: User)
+    fun onUserClick(user: DomainUser)
     fun onTabChange(activeTab: Tabs)
     fun showError(error: TabsError, errorMessage: String = "")
 }

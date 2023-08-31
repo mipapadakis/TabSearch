@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.minas.tabsearch.data.User
 import com.minas.tabsearch.databinding.TabListBinding
 import com.minas.tabsearch.di.tabsModule
+import com.minas.tabsearch.ui.domain.DomainUser
 import com.minas.tabsearch.ui.tabsActivity.IStatusActions
 import com.minas.tabsearch.ui.tabsActivity.Tabs
 import com.minas.tabsearch.ui.tabsActivity.TabsActivity
@@ -65,41 +65,42 @@ class FragmentFollowing : Fragment(), IStatusActions {
         viewModel.tabsState.subscribeToState(viewLifecycleOwner) {
             Log.d("TabSearch test", "Tab 1 ${it.eventName}")
             when (it.eventName) {
-                TabsEvent.LoadFollowing, TabsEvent.SearchFollowing -> {
+                TabsEvent.LoadFollowing -> {
                     viewModel.setEventNone()
                     adapter.submitUserList(it.followingList)
                 }
+                TabsEvent.UpdateUser -> refresh()
                 else -> {}
             }
             if (it.eventName != TabsEvent.None) stopRefresh(800)
         }
     }
 
-    override fun sendFriendRequest(user: User) {
+    override fun sendFriendRequest(user: DomainUser) {
         showToast("Friend Request sent")
         Log.d("TabSearch test", "sendFriendRequest($user)")
         viewModel.sendFriendRequest(user)
     }
 
-    override fun cancelFriendRequest(user: User) {
+    override fun cancelFriendRequest(user: DomainUser) {
         showToast("Friend Request cancelled")
         Log.d("TabSearch test", "cancelFriendRequest($user)")
         viewModel.cancelFriendRequest(user)
     }
 
-    override fun acceptFriendRequest(user: User) {
+    override fun acceptFriendRequest(user: DomainUser) {
         showToast("Friend Request accepted")
         Log.d("TabSearch test", "acceptFriendRequest($user)")
         viewModel.acceptFriendRequest(user)
     }
 
-    override fun declineFriendRequest(user: User) {
+    override fun declineFriendRequest(user: DomainUser) {
         showToast("Friend Request declined")
         Log.d("TabSearch test", "declineFriendRequest($user)")
         viewModel.declineFriendRequest(user)
     }
 
-    override fun unFriend(user: User) {
+    override fun unFriend(user: DomainUser) {
         showToast("unfriended")
         Log.d("TabSearch test", "unFriend($user)")
         viewModel.unFriend(user)

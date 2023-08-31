@@ -53,15 +53,15 @@ class TabsActivity : AppCompatActivity() {
     private fun setupViewModel() {
         viewModel.tabsState.subscribeToState(this) {
             when (it.eventName) {
-                TabsEvent.OnUserClick -> {
+                TabsEvent.UserClick -> {
                     viewModel.setEventNone()
                     startActivity(
                         ProfileActivity.newInstance(
                             this,
-                            name = it.user?.name,
-                            lastName = it.user?.lastName,
-                            username = it.user?.userName,
-                            status = it.user?.friendStatus ?: FriendStatus.NotFriend,
+                            name = it.userClicked?.name,
+                            lastName = it.userClicked?.lastName,
+                            username = it.userClicked?.userName,
+                            status = it.userClicked?.friendStatus ?: FriendStatus.NotFriend,
                         )
                     )
                 }

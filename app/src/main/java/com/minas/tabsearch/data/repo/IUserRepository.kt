@@ -1,12 +1,13 @@
 package com.minas.tabsearch.data.repo
 
+import com.minas.tabsearch.data.FriendStatus
 import com.minas.tabsearch.data.User
 import kotlinx.coroutines.flow.Flow
 
 interface IUserRepository {
     suspend fun insertUser(user: User)
 
-    suspend fun updateUser(user: User)
+    fun updateUser(userId: Int, friendStatus: FriendStatus): Flow<Unit>
 
     suspend fun deleteUser(user: User)
 

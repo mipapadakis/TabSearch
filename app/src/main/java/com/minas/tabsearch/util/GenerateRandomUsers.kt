@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import com.minas.tabsearch.data.FriendStatus
 import com.minas.tabsearch.data.User
+import com.minas.tabsearch.ui.domain.DomainUser
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -57,7 +58,7 @@ class GenerateRandomUsers {
             )
         }
 
-        fun getRandomProfilePic(user: User) = getRandomProfilePic(user.id, user.name, user.lastName)
+        fun getRandomProfilePic(user: DomainUser) = getRandomProfilePic(user.id, user.name, user.lastName)
         fun getRandomProfilePic(seed: Int, name: String, lastName: String): Bitmap {
             val nameInitials = getInitials(name, lastName)
 

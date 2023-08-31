@@ -13,8 +13,8 @@ interface IUserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUser(user: User)
 
-    @Update
-    fun updateUser(user: User)
+    @Query("UPDATE user SET friendStatus=:friendStatus WHERE id = :userId")
+    fun updateUser(userId: Int, friendStatus: FriendStatus)
 
     @Delete
     fun deleteUser(user: User)

@@ -4,13 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minas.tabsearch.data.FriendStatus
-import com.minas.tabsearch.data.User
 import com.minas.tabsearch.data.repo.IUserRepository
+import com.minas.tabsearch.ui.domain.DomainUser
+import com.minas.tabsearch.ui.domain.toDomainUserList
 import com.minas.tabsearch.util.GenerateRandomUsers
 import com.minas.tabsearch.util.ViewState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class TabsViewModel(
@@ -57,7 +58,7 @@ class TabsViewModel(
                 tabsState.updateState {
                     it.copy(
                         eventName = TabsEvent.LoadFollowing,
-                        followingList = list
+                        followingList = list.toDomainUserList()
                     )
                 }
             }
@@ -72,7 +73,7 @@ class TabsViewModel(
                 tabsState.updateState {
                     it.copy(
                         eventName = TabsEvent.LoadFollowers,
-                        followersList = list
+                        followersList = list.toDomainUserList()
                     )
                 }
             }
@@ -82,17 +83,17 @@ class TabsViewModel(
     override fun onTabChange(activeTab: Tabs) {
         tabsState.updateState {
             it.copy(
-                eventName = TabsEvent.OnTabChange,
+                eventName = TabsEvent.TabChange,
                 activeTab = activeTab
             )
         }
     }
 
-    override fun onUserClick(user: User) {
+    override fun onUserClick(user: DomainUser) {
         tabsState.updateState {
             it.copy(
-                eventName = TabsEvent.OnUserClick,
-                user = user
+                eventName = TabsEvent.UserClick,
+                userClicked = user
             )
         }
     }
@@ -125,31 +126,33 @@ class TabsViewModel(
         }
     }
 
-    private fun onChangeFriendStatus(user: User, status: FriendStatus) {
+    private fun onChangeFriendStatus(user: DomainUser, status: FriendStatus) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.updateUser(user.copy(friendStatus = status))
-            delay(150)
-            refresh()
+            repository.updateUser(user.id, status).catch {
+                showError(TabsError.ErrorGeneric, it.message ?: "")
+            }.collectLatest {
+                tabsState.updateState { it.copy(eventName = TabsEvent.UpdateUser) }
+            }
         }
     }
 
-    override fun sendFriendRequest(user: User) {
+    override fun sendFriendRequest(user: DomainUser) {
         onChangeFriendStatus(user, FriendStatus.Pending)
     }
 
-    override fun cancelFriendRequest(user: User) {
+    override fun cancelFriendRequest(user: DomainUser) {
         onChangeFriendStatus(user, FriendStatus.NotFriend)
     }
 
-    override fun acceptFriendRequest(user: User) {
+    override fun acceptFriendRequest(user: DomainUser) {
         onChangeFriendStatus(user, FriendStatus.Friend)
     }
 
-    override fun declineFriendRequest(user: User) {
+    override fun declineFriendRequest(user: DomainUser) {
         onChangeFriendStatus(user, FriendStatus.NotFriend)
     }
 
-    override fun unFriend(user: User) {
+    override fun unFriend(user: DomainUser) {
         onChangeFriendStatus(user, FriendStatus.NotFriend)
     }
 }

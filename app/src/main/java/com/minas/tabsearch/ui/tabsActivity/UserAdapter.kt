@@ -11,23 +11,22 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.minas.tabsearch.R
 import com.minas.tabsearch.data.FriendStatus
-import com.minas.tabsearch.data.User
+import com.minas.tabsearch.ui.domain.DomainUser
 import com.minas.tabsearch.util.GenerateRandomUsers
 import com.minas.tabsearch.util.hide
 import com.minas.tabsearch.util.show
 
 class UserAdapter(
     private val statusActions: IStatusActions,
-    private val onItemClick: (user: User) -> Unit
-) : ListAdapter<User, UserAdapter.UserViewHolder>(UserDiffCallback()) {
-    private val users: MutableList<User> = mutableListOf()
+    private val onItemClick: (user: DomainUser) -> Unit
+) : ListAdapter<DomainUser, UserAdapter.UserViewHolder>(UserDiffCallback()) {
 
-    class UserDiffCallback : DiffUtil.ItemCallback<User>() {
-        override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
+    class UserDiffCallback : DiffUtil.ItemCallback<DomainUser>() {
+        override fun areItemsTheSame(oldItem: DomainUser, newItem: DomainUser): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: User, newItem: User): Boolean {
+        override fun areContentsTheSame(oldItem: DomainUser, newItem: DomainUser): Boolean {
             return oldItem == newItem
         }
     }
@@ -37,16 +36,14 @@ class UserAdapter(
         return UserViewHolder(view)
     }
 
-    override fun getItemCount() = users.size
+    override fun getItemCount() = currentList.size
 
-    fun submitUserList(list: List<User>) {
-        users.clear()
-        users.addAll(list)
-        notifyDataSetChanged()
+    fun submitUserList(list: List<DomainUser>) {
+        submitList(list)
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        holder.bind(users[position])
+        holder.bind(currentList[position])
     }
 
     inner class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -57,7 +54,7 @@ class UserAdapter(
         val statusButton: TextView = itemView.findViewById(R.id.status_button)
         val statusButtonDecline: TextView = itemView.findViewById(R.id.status_button_decline)
 
-        fun bind(user: User) {
+        fun bind(user: DomainUser) {
             avatar.setImageDrawable(
                 BitmapDrawable(
                     context.resources,
@@ -114,9 +111,9 @@ class UserAdapter(
 }
 
 interface IStatusActions {
-    fun sendFriendRequest(user: User)
-    fun cancelFriendRequest(user: User)
-    fun acceptFriendRequest(user: User)
-    fun declineFriendRequest(user: User)
-    fun unFriend(user: User)
+    fun sendFriendRequest(user: DomainUser)
+    fun cancelFriendRequest(user: DomainUser)
+    fun acceptFriendRequest(user: DomainUser)
+    fun declineFriendRequest(user: DomainUser)
+    fun unFriend(user: DomainUser)
 }
